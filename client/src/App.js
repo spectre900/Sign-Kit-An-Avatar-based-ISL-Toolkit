@@ -31,24 +31,32 @@ class App extends Component {
       .appendChild(renderer.domElement);
 
     camera.position.z = 5;
-    var animate = function () {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    };
+    camera.position.y = 1;
+
+    var bone;
 
     let loader = new GLTFLoader();
     loader.load(
       hand,
       (gltf) => {
+        bone = gltf.scene.getObjectByName("Bone");
         scene.add(gltf.scene);
-        console.log(gltf.scene);
       },
       (xhr) => {
         console.log(xhr);
       }
     );
 
+    var animate = function(){
+      requestAnimationFrame(animate);
+      if(bone){
+        bone.rotation.x+=0.02;
+      }
+      renderer.render(scene, camera);
+    }
+
     animate();
+
   }
   render() {
     return <div className="three-canvas" />;
