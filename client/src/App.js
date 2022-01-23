@@ -1,4 +1,4 @@
-import hand from "./Hand/hand.glb";
+import hand from "./Hand/hand2.glb";
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -69,20 +69,29 @@ class App extends Component {
       requestAnimationFrame(() =>{
         this.animate(boneName, rotateAxis, rotateAngle);
       });
-      this.hand.getObjectByName(boneName).rotation[rotateAxis] += 0.02;
+      this.hand.getObjectByName(boneName).rotation[rotateAxis] += Math.PI/60;
       this.renderer.render(this.scene, this.camera);
     }
   }
 
   showMF = () => {
     requestAnimationFrame(() => {
-      this.animate("Bone", "y", Math.PI);
+      this.animate("left", "y", Math.PI);
     });
     requestAnimationFrame(() => {
-      this.animate("Bone008", "z", Math.PI/2.1);
+      this.animate("left2m", "z", Math.PI/2.1);
     });
     requestAnimationFrame(() => {
-      this.animate("Bone009", "z", Math.PI/2);
+      this.animate("left2u", "z", Math.PI/2);
+    });
+    requestAnimationFrame(() => {
+      this.animate("right", "y", Math.PI);
+    });
+    requestAnimationFrame(() => {
+      this.animate("right2m", "z", Math.PI/2.1);
+    });
+    requestAnimationFrame(() => {
+      this.animate("right2u", "z", Math.PI/2);
     });
   }
 
