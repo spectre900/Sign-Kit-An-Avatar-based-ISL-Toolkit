@@ -19,6 +19,9 @@ class App extends Component {
     this.scene = null;
     this.camera = null;
     this.renderer = null;
+    this.pending = false;
+
+    this.animations = []
   }
   
   
@@ -61,47 +64,78 @@ class App extends Component {
         console.log(xhr);
       }
     );
-
   }
 
-  animate = (boneName, rotateAxis, rotateAngle) => {
-    if(this.hand.getObjectByName(boneName).rotation[rotateAxis] < rotateAngle){
-      requestAnimationFrame(() =>{
-        this.animate(boneName, rotateAxis, rotateAngle);
-      });
-      this.hand.getObjectByName(boneName).rotation[rotateAxis] += Math.PI/60;
-      this.renderer.render(this.scene, this.camera);
+  animate = () => {
+    if(this.animations.length == 0){
+      this.pending = false;
+      return ;
     }
+    requestAnimationFrame(this.animate);
+    if(this.animations[0].length){
+        for(let i=0;i<this.animations[0].length;){
+            let [boneName, rotateAxis, rotateAngle, sign] = this.animations[0][i]
+            if(sign == "+" && this.hand.getObjectByName(boneName).rotation[rotateAxis] < rotateAngle){
+                this.hand.getObjectByName(boneName).rotation[rotateAxis] += Math.PI/120;
+                i++;
+            }
+            else if(sign == "-" && this.hand.getObjectByName(boneName).rotation[rotateAxis] > rotateAngle){
+                this.hand.getObjectByName(boneName).rotation[rotateAxis] -= Math.PI/60;
+                i++;
+            }
+            else{
+                this.animations[0].splice(i, 1);
+            }
+        }
+    }
+    else {
+        this.animations.shift();
+    }
+    this.renderer.render(this.scene, this.camera);
   }
 
-  showMF = () => {
-    requestAnimationFrame(() => {
-      this.animate("left", "y", Math.PI);
-    });
-    requestAnimationFrame(() => {
-      this.animate("left2m", "z", Math.PI/2.1);
-    });
-    requestAnimationFrame(() => {
-      this.animate("left2u", "z", Math.PI/2);
-    });
-    requestAnimationFrame(() => {
-      this.animate("right", "y", Math.PI);
-    });
-    requestAnimationFrame(() => {
-      this.animate("right2m", "z", Math.PI/2.1);
-    });
-    requestAnimationFrame(() => {
-      this.animate("right2u", "z", Math.PI/2);
-    });
+  sign = () => {
+
+    let animations = []
+    animations.push(["left", "y", Math.PI, "+"]);
+    animations.push(["left3m", "z", Math.PI/2.1, "+"]);
+    animations.push(["left3u", "z", Math.PI/2, "+"]);
+    animations.push(["left5m", "z", 0, "+"]);
+    animations.push(["left5u", "z", 0, "+"]);
+    animations.push(["right", "y", Math.PI, "+"]);
+    animations.push(["right3m", "z", Math.PI/2.1, "+"]);
+    animations.push(["right3u", "z", Math.PI/2, "+"]);
+    animations.push(["right5m", "z", 0, "+"]);
+    animations.push(["right5u", "z", 0, "+"]);
+    this.animations.push(animations);
+
+    animations = []
+    animations.push(["left", "y", 0, "-"]);
+    animations.push(["left3m", "z", 0, "-"]);
+    animations.push(["left3u", "z", 0, "-"]);
+    animations.push(["left5m", "z", -Math.PI/2, "-"]);
+    animations.push(["left5u", "z", -Math.PI/2, "-"]);
+    animations.push(["right", "y", 0, "-"]);
+    animations.push(["right3m", "z", 0, "-"]);
+    animations.push(["right3u", "z", 0, "-"]);
+    animations.push(["right5m", "z", -Math.PI/2, "-"]);
+    animations.push(["right5u", "z", -Math.PI/2, "-"]);
+    this.animations.push(animations);
+
+    if(this.pending == false){
+      this.pending = true;
+      this.animate();
+    }
+    
   }
 
   render() {
     return (
       <div>
-        <div className="canvas" />
-        <button onClick={this.showMF}>
-          CLICK ME
+        <button onClick={this.sign}>
+          RUN
         </button>
+        <div className="canvas" />
       </div>
     )
   }
