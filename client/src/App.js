@@ -151,6 +151,28 @@ class App extends Component {
     })
   }
 
+  W = () => {
+    this.characters.push('W')
+    this.characters.push(' ')
+    
+    let animations = []
+    animations.push(["left5m", "rotation", "z", -Math.PI/2, "-"]);
+    animations.push(["left5u", "rotation", "z", -Math.PI/2, "-"]);
+    animations.push(["left", "rotation", "y", Math.PI, "+"]);
+    animations.push(["left4m", "rotation", "x", Math.PI/18, "-"]);
+    animations.push(["left2m", "rotation", "x", Math.PI/6, "-"]);
+    this.animations.push(animations);
+    
+    animations = []
+    animations.push(["left5m", "rotation", "z", 0, "+"]);
+    animations.push(["left5u", "rotation", "z", 0, "+"]);
+    animations.push(["left", "rotation", "y", 0, "-"]);
+    animations.push(["left4m", "rotation", "x", Math.PI/9, "+"]);
+    animations.push(["left2m", "rotation", "x", Math.PI/4.5, "+"]);
+    this.animations.push(animations);
+
+  }
+
   N = () => {
     this.characters.push('N')
     this.characters.push(' ')
@@ -301,6 +323,7 @@ class App extends Component {
   sign = () => {
 
     this.default();
+    this.W();
     this.N();
     this.M();
     this.H();
