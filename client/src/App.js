@@ -1,10 +1,10 @@
-import human from './Models/joe.glb';
+import human from './Models/adam/adam.glb';
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import React, { Component } from "react";
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
 
   constructor(props) {
@@ -39,7 +39,7 @@ class App extends Component {
 
     this.camera = new THREE.PerspectiveCamera(
         75,
-        window.innerWidth / window.innerHeight,
+        window.innerWidth*0.75 / window.innerHeight,
         0.1,
         1000
     )
@@ -48,11 +48,11 @@ class App extends Component {
     this.renderer.gammaInput = true;
     this.renderer.gammaOutput = true;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(window.innerWidth*0.75, window.innerHeight);
     document.getElementsByClassName("canvas")[0].appendChild(this.renderer.domElement);
 
-    this.camera.position.z = 0.8;
-    this.camera.position.y = 1.4;
+    this.camera.position.z = 0.9;
+    this.camera.position.y = 1.3;
 
     let loader = new GLTFLoader();
     loader.load(
@@ -71,14 +71,6 @@ class App extends Component {
       }
     );
   }
-
-  wait(ms){
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-      end = new Date().getTime();
-   }
- }
 
   animate = () => {
     if(this.animations.length === 0){
@@ -107,13 +99,17 @@ class App extends Component {
         }
     }
     else {
-      this.flag = true
-      this.addNewCharacter(this.characters[0])
+      this.flag = true;
+      if(this.characters.length>0){
+        this.addNewCharacter(this.characters[0]);
+      }
       setTimeout(() => {
         this.flag = false
-      }, 100)
+      }, 500)
       this.animations.shift();
-      this.characters.shift();
+      if(this.characters.length>0){
+        this.characters.shift();
+      }
     }
     this.renderer.render(this.scene, this.camera);
   }
@@ -129,7 +125,8 @@ class App extends Component {
   sign = () => {
 
     let animations = []
-    animations.push(["mixamorig7Neck", "rotation", "x", Math.PI/9, "+"]);
+    animations.push(["mixamorig7Neck", "rotation", "x", Math.PI/12, "+"]);
+    animations.push(["mixamorig7Spine", "rotation", "x", -Math.PI/18, "-"]);
     animations.push(["mixamorig7LeftArm", "rotation", "x", Math.PI/3, "+"]);
     animations.push(["mixamorig7RightArm", "rotation", "x", Math.PI/3, "+"]);
     animations.push(["mixamorig7LeftForeArm", "rotation", "y", Math.PI/6, "+"]);
@@ -163,7 +160,7 @@ class App extends Component {
       marginTop: '10px',
       marginBottom: '10px',
       color: 'white',
-      width: '30%',
+      width: '80%',
       padding: '10px',
       backgroundColor: 'green',
       fontSize: '20px',
@@ -175,7 +172,7 @@ class App extends Component {
       marginRight : 'auto',
       marginBottom: '10px',
       color: 'black',
-      width: '15%',
+      width: '80%',
       padding: '10px',
       fontSize: '20px',
       borderRadius: '15px',
@@ -183,12 +180,18 @@ class App extends Component {
     }
 
     return (
-      <div style={divStyle}>
-        <button onClick={this.sign} style={buttonStyle}>
-          RUN
-        </button><br />
-        <input type='text' value={this.state.text} style={inputStyle} readOnly />
-        <div className="canvas" />
+      <div className='container-fluid'>
+        <div style={divStyle} className='row'>
+          <div className='col-md-3'>
+            <button onClick={this.sign} style={buttonStyle}>
+              RUN
+            </button><br />
+            <input type='text' value={this.state.text} style={inputStyle} readOnly />
+          </div>
+          <div className='col-md-9'>
+            <div className="canvas" />
+          </div>
+        </div>
       </div>
     )
   }
