@@ -1,4 +1,4 @@
-import human from './Models/human.glb';
+import human from './Models/joe.glb';
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -14,7 +14,7 @@ class App extends Component {
       text: ""
     };
 
-    this.d = 0.2;
+    this.d = 0.05;
     this.flag = false
     this.start = null;
     this.scene = null;
@@ -30,10 +30,10 @@ class App extends Component {
   componentDidMount() {
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xffffff);
+    this.scene.background = new THREE.Color(0xdddddd);
 
-    const spotLight = new THREE.SpotLight(0xaaccff, 3);
-    spotLight.position.set(0, 0, 10)
+    const spotLight = new THREE.SpotLight(0xffffff, 2);
+    spotLight.position.set(0, 5, 5);
     this.scene.add(spotLight);
 
 
@@ -45,6 +45,9 @@ class App extends Component {
     )
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.gammaInput = true;
+    this.renderer.gammaOutput = true;
+    this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementsByClassName("canvas")[0].appendChild(this.renderer.domElement);
 
@@ -56,10 +59,10 @@ class App extends Component {
       human,
       (gltf) => {
         gltf.scene.traverse((child) => {
-              if ( child.type === 'SkinnedMesh' ) {
-                child.frustumCulled = false;
-              }
-        });
+          if ( child.type === 'SkinnedMesh' ) {
+            child.frustumCulled = false;
+          }
+    });
         this.human = gltf.scene;
         this.scene.add(this.human);
       },
@@ -108,7 +111,7 @@ class App extends Component {
       this.addNewCharacter(this.characters[0])
       setTimeout(() => {
         this.flag = false
-      }, 500)
+      }, 100)
       this.animations.shift();
       this.characters.shift();
     }
@@ -126,7 +129,13 @@ class App extends Component {
   sign = () => {
 
     let animations = []
-    animations.push(["Neck", "rotation", "x", Math.PI/5, "+"]);
+    animations.push(["mixamorig7Neck", "rotation", "x", Math.PI/9, "+"]);
+    animations.push(["mixamorig7LeftArm", "rotation", "x", Math.PI/3, "+"]);
+    animations.push(["mixamorig7RightArm", "rotation", "x", Math.PI/3, "+"]);
+    animations.push(["mixamorig7LeftForeArm", "rotation", "y", Math.PI/6, "+"]);
+    animations.push(["mixamorig7RightForeArm", "rotation", "y", -Math.PI/6, "-"]);
+    animations.push(["mixamorig7LeftForeArm", "rotation", "z", Math.PI/1.5, "+"]);
+    animations.push(["mixamorig7RightForeArm", "rotation", "z", -Math.PI/1.5, "-"]);
     this.animations.push(animations);
 
     if(this.pending === false){
@@ -137,7 +146,7 @@ class App extends Component {
   }
 
   displayStatic = () => {
-    requestAnimationFrame(this.a);
+    requestAnimationFrame(this.displayStatic);
     this.renderer.render(this.scene, this.camera);
   }
 
