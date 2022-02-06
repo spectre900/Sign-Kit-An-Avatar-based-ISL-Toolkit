@@ -1,4 +1,4 @@
-import human from './Models/adam/adam.glb';
+import human from './Models/bot/bot.glb';
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -36,6 +36,10 @@ class App extends Component {
     spotLight.position.set(0, 5, 5);
     this.scene.add(spotLight);
 
+    const light = new THREE.PointLight(0xffffff, 1.5);
+    light.position.set(0, 0, 0);
+    this.scene.add(light);
+
 
     this.camera = new THREE.PerspectiveCamera(
         75,
@@ -45,9 +49,9 @@ class App extends Component {
     )
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.gammaInput = true;
-    this.renderer.gammaOutput = true;
-    this.renderer.shadowMap.enabled = true;
+    // this.renderer.gammaInput = true;
+    // this.renderer.gammaOutput = true;
+    // this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth*0.75, window.innerHeight);
     document.getElementsByClassName("canvas")[0].appendChild(this.renderer.domElement);
 
@@ -105,7 +109,7 @@ class App extends Component {
       }
       setTimeout(() => {
         this.flag = false
-      }, 500)
+      }, 0)
       this.animations.shift();
       if(this.characters.length>0){
         this.characters.shift();
@@ -122,17 +126,14 @@ class App extends Component {
     })
   }
 
-  sign = () => {
+  default = () => {
 
     let animations = []
-    animations.push(["mixamorig7Neck", "rotation", "x", Math.PI/12, "+"]);
-    animations.push(["mixamorig7Spine", "rotation", "x", -Math.PI/18, "-"]);
-    animations.push(["mixamorig7LeftArm", "rotation", "x", Math.PI/3, "+"]);
-    animations.push(["mixamorig7RightArm", "rotation", "x", Math.PI/3, "+"]);
-    animations.push(["mixamorig7LeftForeArm", "rotation", "y", Math.PI/6, "+"]);
-    animations.push(["mixamorig7RightForeArm", "rotation", "y", -Math.PI/6, "-"]);
-    animations.push(["mixamorig7LeftForeArm", "rotation", "z", Math.PI/1.5, "+"]);
-    animations.push(["mixamorig7RightForeArm", "rotation", "z", -Math.PI/1.5, "-"]);
+    animations.push(["mixamorigNeck", "rotation", "x", Math.PI/12, "+"]);
+    animations.push(["mixamorigLeftArm", "rotation", "z", -Math.PI/3, "-"]);
+    animations.push(["mixamorigRightArm", "rotation", "z", Math.PI/3, "+"]);
+    animations.push(["mixamorigRightForeArm", "rotation", "y", Math.PI/1.5, "+"]);
+    animations.push(["mixamorigLeftForeArm", "rotation", "y", -Math.PI/1.5, "-"]);
     this.animations.push(animations);
 
     if(this.pending === false){
@@ -140,6 +141,10 @@ class App extends Component {
       this.animate();
     }
     
+  }
+
+  sign = () => {
+    this.default();
   }
 
   displayStatic = () => {
