@@ -1,5 +1,5 @@
 import './App.css'
-import React, { Component } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import avatar from './Models/xbot/xbot.glb';
@@ -12,7 +12,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
-const App = () => {
+function App() {
+  const [text, setText] = useState("");
+  const [inputText, setInputText] = useState("");
+
+  const componentRef = useRef({});
+  const { current: ref } = componentRef;
 
   const {
     transcript,
@@ -20,62 +25,34 @@ const App = () => {
     resetTranscript,
   } = useSpeechRecognition();
 
-  return (
-    <Comp
-      listening = {listening}
-      transcript = {transcript}
-      resetTranscript = {resetTranscript}
-    />
-  );
-};
+  useEffect(() => {
+    ref.d = 0.1;
+    ref.flag = false;
+    ref.pending = false;
 
-class Comp extends Component {
+    ref.animations = [];
+    ref.characters = [];
 
-  constructor(props) {
-
-    super(props)
-  
-    this.state = {
-      text: "",
-      inputText: "",
-    };
-
-    this.d = 0.1;
-    this.flag = false
-    this.start = null;
-    this.scene = null;
-    this.camera = null;
-    this.renderer = null;
-    this.pending = false;
-
-    this.animations = []
-    this.characters = []
-
-  }
-  
-  componentDidMount() {
-
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xdddddd);
+    ref.scene = new THREE.Scene();
+    ref.scene.background = new THREE.Color(0xdddddd);
 
     const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 5, 5);
-    this.scene.add(spotLight);
+    ref.scene.add(spotLight);
 
-
-    this.camera = new THREE.PerspectiveCamera(
+    ref.camera = new THREE.PerspectiveCamera(
         30,
         window.innerWidth*0.66 / window.innerHeight,
         0.1,
         1000
     )
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(window.innerWidth*0.66, window.innerHeight);
-    document.getElementById("canvas").appendChild(this.renderer.domElement);
+    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
+    ref.renderer.setSize(window.innerWidth*0.66, window.innerHeight);
+    document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
-    this.camera.position.z = 1.6;
-    this.camera.position.y = 1.4;
+    ref.camera.position.z = 1.6;
+    ref.camera.position.y = 1.4;
 
     let loader = new GLTFLoader();
     loader.load(
@@ -86,141 +63,136 @@ class Comp extends Component {
             child.frustumCulled = false;
           }
     });
-        this.avatar = gltf.scene;
-        this.scene.add(this.avatar);
+        ref.avatar = gltf.scene;
+        ref.scene.add(ref.avatar);
       },
       (xhr) => {
         console.log(xhr);
       }
     );
-  }
 
-  animate = () => {
-    if(this.animations.length === 0){
-      this.pending = false;
+  }, [ref]);
+
+  ref.animate = () => {
+    if(ref.animations.length === 0){
+        ref.pending = false;
       return ;
     }
-    requestAnimationFrame(this.animate);
-    if(this.animations[0].length){
-        if(!this.flag) {
-          for(let i=0;i<this.animations[0].length;){
-            let [boneName, action, axis, limit, sign] = this.animations[0][i]
-            if(sign === "+" && this.avatar.getObjectByName(boneName)[action][axis] < limit){
-                this.avatar.getObjectByName(boneName)[action][axis] += this.d;
-                this.avatar.getObjectByName(boneName)[action][axis] = Math.min(this.avatar.getObjectByName(boneName)[action][axis], limit);
+    requestAnimationFrame(ref.animate);
+    if(ref.animations[0].length){
+        if(!ref.flag) {
+          for(let i=0;i<ref.animations[0].length;){
+            let [boneName, action, axis, limit, sign] = ref.animations[0][i]
+            if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
+                ref.avatar.getObjectByName(boneName)[action][axis] += ref.d;
+                ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
                 i++;
             }
-            else if(sign === "-" && this.avatar.getObjectByName(boneName)[action][axis] > limit){
-                this.avatar.getObjectByName(boneName)[action][axis] -= this.d;
-                this.avatar.getObjectByName(boneName)[action][axis] = Math.max(this.avatar.getObjectByName(boneName)[action][axis], limit);
+            else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
+                ref.avatar.getObjectByName(boneName)[action][axis] -= ref.d;
+                ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
                 i++;
             }
             else{
-                this.animations[0].splice(i, 1);
+                ref.animations[0].splice(i, 1);
             }
           }
         }
     }
     else {
-      this.flag = true;
-      if(this.characters.length>0){
-        this.addNewCharacter(this.characters[0]);
+      ref.flag = true;
+      if(ref.characters.length>0){
+        addNewCharacter(ref.characters[0]);
       }
       setTimeout(() => {
-        this.flag = false
+        ref.flag = false
       }, 800)
-      this.animations.shift();
-      if(this.characters.length>0){
-        this.characters.shift();
+      ref.animations.shift();
+      if(ref.characters.length>0){
+        ref.characters.shift();
       }
     }
-    this.renderer.render(this.scene, this.camera);
+    ref.renderer.render(ref.scene, ref.camera);
   }
 
-  addNewCharacter = (char) => {
-    this.setState(prevState => {
-      let newText = prevState.text + char
-      console.log(newText)
-      return {text : newText}
-    })
+  const addNewCharacter = (char) => {
+    setText(prevText => prevText.text + char)
   }
 
-  sign = () => {
-    defaultPose(this);
-    var str = this.props.transcript.toUpperCase();
+  const displayStatic = () => {
+    requestAnimationFrame(displayStatic);
+    ref.renderer.render(ref.scene, ref.camera);
+  }
+
+  const sign = () => {
+    defaultPose(ref);
+    var str = transcript.toUpperCase();
     for(let ch of str){
       if (ch == 'A'){
-        alphabets.A(this);
+        alphabets.A(ref);
       }
       else if(ch == 'B'){
-        alphabets.B(this);
+        alphabets.B(ref);
       }
       else if(ch == 'C'){
-        alphabets.C(this);
+        alphabets.C(ref);
       }
       else if(ch == 'D'){
-        alphabets.D(this);
+        alphabets.D(ref);
       }
       else if(ch == 'E'){
-        alphabets.E(this);
+        alphabets.E(ref);
       }
       else if(ch == 'F'){
-        alphabets.F(this);
+        alphabets.F(ref);
       }
     }
   }
 
-  displayStatic = () => {
-    requestAnimationFrame(this.displayStatic);
-    this.renderer.render(this.scene, this.camera);
-  }
-
-  startListening = () =>{
+  const startListening = () =>{
     SpeechRecognition.startListening({continuous: true});
   }
 
-  stopListening = () =>{
+  const stopListening = () =>{
     SpeechRecognition.stopListening();
   }
-  
-  render() {
-    return (
-      <div className='container-fluid'>
-        <div className='row'>
-          <div className='col-md-4'>
-            <h1 className='heading'>
-              Audio to Sign Language
-            </h1>
-            <label className='label-style'>
-              Processed Text
-            </label>
-            <input type='text' value={this.state.text} className='w-100 input-style' readOnly />
-            <label className='label-style'>
-              Speech Recognition: {this.props.listening ? 'on' : 'off'}
-            </label>
-            <div className='space-between'>
-                <button className="btn btn-primary col-md-3 btn-style" onClick={this.startListening}>
-                  Start
-                </button>
-                <button className="btn btn-primary col-md-3 btn-style" onClick={this.stopListening}>
-                  Stop
-                </button>
-                <button className="btn btn-primary col-md-3 btn-style" onClick={this.props.resetTranscript}>
-                  Reset
-                </button>
-            </div>
-            <input type='text' value={this.props.transcript} className='w-100 input-style' />
-            <button onClick={this.sign} className='btn btn-primary w-100 btn-style btn-start-anim'>
-              Start Animations
-            </button>
+
+  return (
+    <div className='container-fluid'>
+      <div className='row'>
+        <div className='col-md-4'>
+          <h1 className='heading'>
+            Audio to Sign Language
+          </h1>
+          <label className='label-style'>
+            Processed Text
+          </label>
+          <input type='text' value={text} className='w-100 input-style' readOnly />
+          <label className='label-style'>
+            Speech Recognition: {listening ? 'on' : 'off'}
+          </label>
+          <div className='space-between'>
+              <button className="btn btn-primary col-md-3 btn-style" onClick={startListening}>
+                Start
+              </button>
+              <button className="btn btn-primary col-md-3 btn-style" onClick={stopListening}>
+                Stop
+              </button>
+              <button className="btn btn-primary col-md-3 btn-style" onClick={resetTranscript}>
+                Reset
+              </button>
           </div>
-          <div className='col-md-8'>
-            <div id='canvas'/>
-          </div>
+          <input type='text' value={transcript} className='w-100 input-style' />
+          <button onClick={sign} className='btn btn-primary w-100 btn-style btn-start-anim'>
+            Start Animations
+          </button>
+        </div>
+        <div className='col-md-8'>
+          <div id='canvas'/>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default App;
