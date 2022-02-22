@@ -1,9 +1,13 @@
 import './App.css'
 import React, { useState, useEffect, useRef } from "react";
+import Slider from 'react-input-slider';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 
 import xbot from './Models/xbot/xbot.glb';
 import ybot from './Models/ybot/ybot.glb';
+import xbotPic from './Models/xbot/xbot.png';
+import ybotPic from './Models/ybot/ybot.png';
 
 import * as alphabets from './Animations/alphabets';
 import { defaultPose } from './Animations/defaultPose';
@@ -15,8 +19,8 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 
 function App() {
   const [text, setText] = useState("");
-  const [inputText, setInputText] = useState("");
   const [bot, setBot] = useState(ybot);
+  const [speed, setSpeed] = useState(0.1);
 
   const componentRef = useRef({});
   const { current: ref } = componentRef;
@@ -29,7 +33,6 @@ function App() {
 
   useEffect(() => {
 
-    ref.d = 0.1;
     ref.flag = false;
     ref.pending = false;
 
@@ -45,13 +48,13 @@ function App() {
 
     ref.camera = new THREE.PerspectiveCamera(
         30,
-        window.innerWidth*0.66 / window.innerHeight,
+        window.innerWidth*0.57 / window.innerHeight,
         0.1,
         1000
     )
 
     ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth*0.66, window.innerHeight);
+    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight);
     document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
@@ -89,12 +92,12 @@ function App() {
           for(let i=0;i<ref.animations[0].length;){
             let [boneName, action, axis, limit, sign] = ref.animations[0][i]
             if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] += ref.d;
+                ref.avatar.getObjectByName(boneName)[action][axis] += speed;
                 ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
                 i++;
             }
             else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] -= ref.d;
+                ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
                 ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
                 i++;
             }
@@ -106,25 +109,19 @@ function App() {
     }
     else {
       ref.flag = true;
-      if(ref.characters.length>0){
-        addNewCharacter(ref.characters[0]);
-      }
+      ref.count += 1;
+      showProcessedText(ref.count);
       setTimeout(() => {
         ref.flag = false
       }, 800)
       ref.animations.shift();
-      if(ref.characters.length>0){
-        ref.characters.shift();
-      }
     }
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const addNewCharacter = (char) => {
-    setText(prevText => prevText.text + char)
-  }
-
   const sign = () => {
+
+    ref.count = 0;
     
     var str = transcript.toUpperCase();
     for(let ch of str){
@@ -149,6 +146,21 @@ function App() {
     }
   }
 
+  const showProcessedText = (animationCount) => {
+    
+    let i=0, count=0;
+    let charCount = Math.floor((animationCount+1)/2);
+
+    while(count<charCount && i<transcript.length) {
+      if(transcript[i] !== ' ')
+        count++;
+      i++;
+    }
+
+    let processedText = transcript.substring(0, i);
+    setText(processedText)
+  }
+
   const startListening = () =>{
     SpeechRecognition.startListening({continuous: true});
   }
@@ -160,38 +172,54 @@ function App() {
   return (
     <div className='container-fluid'>
       <div className='row'>
-        <div className='col-md-4'>
+        <div className='col-md-3'>
           <h1 className='heading'>
             Audio to Sign Language
           </h1>
           <label className='label-style'>
             Processed Text
           </label>
-          <input type='text' value={text} className='w-100 input-style' readOnly />
+          <textarea rows={5} value={text} className='w-100 input-style' readOnly />
           <label className='label-style'>
             Speech Recognition: {listening ? 'on' : 'off'}
           </label>
           <div className='space-between'>
-              <button className="btn btn-primary col-md-3 btn-style" onClick={startListening}>
-                Start
-              </button>
-              <button className="btn btn-primary col-md-3 btn-style" onClick={stopListening}>
-                Stop
-              </button>
-              <button className="btn btn-primary col-md-3 btn-style" onClick={resetTranscript}>
-                Reset
-              </button>
+            <button className="btn btn-primary btn-style btn-half" onClick={startListening}>
+              Mic On <i className="fa fa-microphone"/>
+            </button>
+            <button className="btn btn-primary btn-style btn-half" onClick={stopListening}>
+              Mic Off <i className="fa fa-microphone-slash"/>
+            </button>
           </div>
-          <input type='text' value={transcript} className='w-100 input-style' />
-          <button onClick={sign} className='btn btn-primary w-100 btn-style btn-start-anim'>
+          <textarea rows={5} value={transcript} className='w-100 input-style' />
+          <button className="btn btn-primary col-md-12 btn-style" onClick={resetTranscript}>
+            Clear Transcript
+          </button>
+          <button onClick={sign} className='btn btn-primary w-100 btn-style btn-start'>
             Start Animations
           </button>
-          <button onClick = { () => { setBot(bot===xbot?ybot:xbot) } }>
-            Switch bot
-          </button>
         </div>
-        <div className='col-md-8'>
+        <div className='col-md-7'>
           <div id='canvas'/>
+        </div>
+        <div className='col-md-2'>
+          <p className='bot-label'>
+            Select Avatar
+          </p>
+          <img src={xbotPic} className='bot-image col-md-11' onClick={()=>{setBot(xbot)}}/>
+          <img src={ybotPic} className='bot-image col-md-11' onClick={()=>{setBot(ybot)}}/>
+          <p className='label-style'>
+            Animation Speed: {Math.round(speed*100)/100}
+          </p>
+          <Slider
+            axis="x"
+            xmin={0.05}
+            xmax={0.50}
+            xstep={0.01}
+            x={speed}
+            onChange={({ x }) => setSpeed(x)}
+            className='w-100'
+          />
         </div>
       </div>
     </div>

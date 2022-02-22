@@ -1,6 +1,5 @@
 export const F = (ref) => {
 
-    ref.characters.push('F')
     let animations = []
 
     animations.push(["mixamorigRightHandRing1", "rotation", "z", Math.PI/2, "+"]);
@@ -32,7 +31,6 @@ export const F = (ref) => {
 
     ref.animations.push(animations);
 
-    ref.characters.push(' ')
     animations = []
 
     animations.push(["mixamorigRightHandRing1", "rotation", "z", 0, "-"]);

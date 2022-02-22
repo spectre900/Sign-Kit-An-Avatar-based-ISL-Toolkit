@@ -9,7 +9,7 @@
 }
 .label-style{
     font-size: 20px;
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .input-style{
@@ -24,6 +24,44 @@
     margin-top: 20px !important;
 }
 
-.btn-start-anim{
-    margin-top: 80px !important;
+.btn-half{
+    width: 48%;
+}
+
+.btn-gap{
+    margin-top: 50px !important;
+}
+
+.bot-label{
+    margin-top: 20px;
+    font-size: 25px;
+    text-align: center;
+}
+
+.bot-image{
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 30px;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.bot-image:hover{
+    border-width: 5px;
+}
+
+canvas{
+    border-style: solid;
+    border-width: 3px;
+}
+
+.btn-start{
+    border: none !important;
+    background-color: #4CAF50 !important;
+}
+
+i{
+    margin-left: 20px;
 }
