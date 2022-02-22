@@ -2,7 +2,8 @@ import './App.css'
 import React, { useState, useEffect, useRef } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import avatar from './Models/xbot/xbot.glb';
+import xbot from './Models/xbot/xbot.glb';
+import ybot from './Models/ybot/ybot.glb';
 
 import * as alphabets from './Animations/alphabets';
 import { defaultPose } from './Animations/defaultPose';
@@ -15,6 +16,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 function App() {
   const [text, setText] = useState("");
   const [inputText, setInputText] = useState("");
+  const [bot, setBot] = useState(ybot);
 
   const componentRef = useRef({});
   const { current: ref } = componentRef;
@@ -26,6 +28,7 @@ function App() {
   } = useSpeechRecognition();
 
   useEffect(() => {
+
     ref.d = 0.1;
     ref.flag = false;
     ref.pending = false;
@@ -49,6 +52,7 @@ function App() {
 
     ref.renderer = new THREE.WebGLRenderer({ antialias: true });
     ref.renderer.setSize(window.innerWidth*0.66, window.innerHeight);
+    document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
     ref.camera.position.z = 1.6;
@@ -56,7 +60,7 @@ function App() {
 
     let loader = new GLTFLoader();
     loader.load(
-      avatar,
+      bot,
       (gltf) => {
         gltf.scene.traverse((child) => {
           if ( child.type === 'SkinnedMesh' ) {
@@ -65,13 +69,14 @@ function App() {
     });
         ref.avatar = gltf.scene;
         ref.scene.add(ref.avatar);
+        defaultPose(ref);
       },
       (xhr) => {
         console.log(xhr);
       }
     );
 
-  }, [ref]);
+  }, [ref, bot]);
 
   ref.animate = () => {
     if(ref.animations.length === 0){
@@ -119,31 +124,26 @@ function App() {
     setText(prevText => prevText.text + char)
   }
 
-  const displayStatic = () => {
-    requestAnimationFrame(displayStatic);
-    ref.renderer.render(ref.scene, ref.camera);
-  }
-
   const sign = () => {
-    defaultPose(ref);
+    
     var str = transcript.toUpperCase();
     for(let ch of str){
-      if (ch == 'A'){
+      if (ch === 'A'){
         alphabets.A(ref);
       }
-      else if(ch == 'B'){
+      else if(ch === 'B'){
         alphabets.B(ref);
       }
-      else if(ch == 'C'){
+      else if(ch === 'C'){
         alphabets.C(ref);
       }
-      else if(ch == 'D'){
+      else if(ch === 'D'){
         alphabets.D(ref);
       }
-      else if(ch == 'E'){
+      else if(ch === 'E'){
         alphabets.E(ref);
       }
-      else if(ch == 'F'){
+      else if(ch === 'F'){
         alphabets.F(ref);
       }
     }
@@ -185,6 +185,9 @@ function App() {
           <input type='text' value={transcript} className='w-100 input-style' />
           <button onClick={sign} className='btn btn-primary w-100 btn-style btn-start-anim'>
             Start Animations
+          </button>
+          <button onClick = { () => { setBot(bot===xbot?ybot:xbot) } }>
+            Switch bot
           </button>
         </div>
         <div className='col-md-8'>
