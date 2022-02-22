@@ -2,7 +2,7 @@ import './App.css'
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import avatar from './Models/bot/bot.glb';
+import avatar from './Models/xbot/xbot.glb';
 
 import * as alphabets from './Animations/alphabets';
 import { defaultPose } from './Animations/defaultPose';
@@ -65,14 +65,14 @@ class Comp extends Component {
 
     this.camera = new THREE.PerspectiveCamera(
         30,
-        window.innerWidth*0.67 / window.innerHeight,
+        window.innerWidth*0.66 / window.innerHeight,
         0.1,
         1000
     )
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setSize(window.innerWidth*0.67, window.innerHeight);
-    document.getElementsByClassName("canvas")[0].appendChild(this.renderer.domElement);
+    this.renderer.setSize(window.innerWidth*0.66, window.innerHeight);
+    document.getElementById("canvas").appendChild(this.renderer.domElement);
 
     this.camera.position.z = 1.6;
     this.camera.position.y = 1.4;
@@ -164,6 +164,9 @@ class Comp extends Component {
       else if(ch == 'E'){
         alphabets.E(this);
       }
+      else if(ch == 'F'){
+        alphabets.F(this);
+      }
     }
   }
 
@@ -183,40 +186,36 @@ class Comp extends Component {
   render() {
     return (
       <div className='container-fluid'>
-        <div className='row div-style'>
+        <div className='row'>
           <div className='col-md-4'>
-           
-            <div className='header row text-center'>
-              AUDIO TO SIGN LANGUAGE
+            <h1 className='heading'>
+              Audio to Sign Language
+            </h1>
+            <label className='label-style'>
+              Processed Text
+            </label>
+            <input type='text' value={this.state.text} className='w-100 input-style' readOnly />
+            <label className='label-style'>
+              Speech Recognition: {this.props.listening ? 'on' : 'off'}
+            </label>
+            <div className='space-between'>
+                <button className="btn btn-primary col-md-3 btn-style" onClick={this.startListening}>
+                  Start
+                </button>
+                <button className="btn btn-primary col-md-3 btn-style" onClick={this.stopListening}>
+                  Stop
+                </button>
+                <button className="btn btn-primary col-md-3 btn-style" onClick={this.props.resetTranscript}>
+                  Reset
+                </button>
             </div>
-  
-            <div className='body'>
-              <div className='content'>
-                <label></label>
-                
-                <input type='text' value={this.state.text} className='form-control input-style' readOnly /><br /><br />
-  
-                <label>Enter text here</label>
-                <input type='text' value={this.props.transcript} className='form-control input-style' />
-  
-                <div className='row button-group'>
-                  <button type="button" className="btn btn-primary col-md-3 button-small" onClick={this.startListening}>Start</button>
-                  <button type="button" className="btn btn-primary col-md-3 button-small" onClick={this.stopListening}>Stop </button>
-                  <button type="button" className="btn btn-primary col-md-3 button-small" onClick={this.props.resetTranscript}>Reset </button>
-                </div>
-
-                <p>Microphone: {this.props.listening ? 'on' : 'off'}</p>
-              </div>
-            </div>
-  
-            <div className='footer'>
-              <button onClick={this.sign} className='btn btn-primary button-style'>
-                START ANIMATIONS
-              </button><br />
-            </div>
+            <input type='text' value={this.props.transcript} className='w-100 input-style' />
+            <button onClick={this.sign} className='btn btn-primary w-100 btn-style btn-start-anim'>
+              Start Animations
+            </button>
           </div>
           <div className='col-md-8'>
-            <div className="canvas" />
+            <div id='canvas'/>
           </div>
         </div>
       </div>

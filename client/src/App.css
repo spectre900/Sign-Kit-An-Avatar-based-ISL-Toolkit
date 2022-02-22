@@ -1,71 +1,29 @@
-canvas { display: block; }
-html { overflow: hidden; background: #000; margin: 0; padding: 0}
-
-.div-style {
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    width: 100%;
-}
-
-.button-style {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    color: 'white';
-    width: 100%;
-    padding: 10px;
-    font-size: 40px;
-    border-radius: 15px;
-}
-
-.input-style {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 10px;
-    color: 'black';
-    width: 100%;
-    padding: 10px;
-    font-size: 20px;
-    border-radius: 15px;
+.heading{
+    margin-top: 30px;
     text-align: center;
 }
-
-.header {
-    height: 18%;
-    width: 100%;
-    text-align: center;
-    color: black;
-    font-size: 70px;
-    border-radius: 15px;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.body {
-    height: 69.5%;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.footer {
-
-}
-
-.button-group {
+.space-between{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-left: 40px;
-    margin-right: 40px;
+}
+.label-style{
+    font-size: 20px;
+    margin-top: 50px;
 }
 
-.button-small {
-    color: 'white';
-    padding: 10px;
-    font-size: 20px;
-    border-radius: 15px;
+.input-style{
+    padding: 5px;
+    font-size: 20px !important;
+    margin-top: 20px !important;
+}
+
+.btn-style{
+    padding: 10px !important;
+    font-size: 20px !important;
+    margin-top: 20px !important;
+}
+
+.btn-start-anim{
+    margin-top: 80px !important;
 }
