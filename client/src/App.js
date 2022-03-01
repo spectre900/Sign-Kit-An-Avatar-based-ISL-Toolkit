@@ -124,6 +124,7 @@ function App() {
     ref.count = 0;
     
     var str = transcript.toUpperCase();
+    
     for(let ch of str){
       if (ch === 'A'){
         alphabets.A(ref);
@@ -142,6 +143,39 @@ function App() {
       }
       else if(ch === 'F'){
         alphabets.F(ref);
+      }
+      else if(ch === 'G'){
+        alphabets.G(ref);
+      }
+      else if(ch === 'I'){
+        alphabets.I(ref);
+      }
+      else if(ch === 'O'){
+        alphabets.O(ref);
+      }
+      else if(ch === 'P'){
+        alphabets.P(ref);
+      }
+      else if(ch === 'Q'){
+        alphabets.Q(ref);
+      }
+      else if(ch === 'R'){
+        alphabets.R(ref);
+      }
+      else if(ch === 'T'){
+        alphabets.T(ref);
+      }
+      else if(ch === 'U'){
+        alphabets.U(ref);
+      }
+      else if(ch === 'V'){
+        alphabets.V(ref);
+      }
+      else if(ch === 'X'){
+        alphabets.X(ref);
+      }
+      else{
+        
       }
     }
   }
