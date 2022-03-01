@@ -21,6 +21,7 @@ function App() {
   const [text, setText] = useState("");
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
+  const [pause, setPause] = useState(800);
 
   const componentRef = useRef({});
   const { current: ref } = componentRef;
@@ -113,7 +114,7 @@ function App() {
       showProcessedText(ref.count);
       setTimeout(() => {
         ref.flag = false
-      }, 800)
+      }, pause);
       ref.animations.shift();
     }
     ref.renderer.render(ref.scene, ref.camera);
@@ -252,6 +253,18 @@ function App() {
             xstep={0.01}
             x={speed}
             onChange={({ x }) => setSpeed(x)}
+            className='w-100'
+          />
+          <p className='label-style'>
+            Pause time: {pause} ms
+          </p>
+          <Slider
+            axis="x"
+            xmin={0}
+            xmax={2000}
+            xstep={100}
+            x={pause}
+            onChange={({ x }) => setPause(x)}
             className='w-100'
           />
         </div>
