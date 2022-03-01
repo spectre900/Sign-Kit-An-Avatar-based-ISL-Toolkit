@@ -26,6 +26,9 @@ function App() {
   const componentRef = useRef({});
   const { current: ref } = componentRef;
 
+  let textFromAudio = React.createRef();
+  let textFromInput = React.createRef();
+
   const {
     transcript,
     listening,
@@ -120,75 +123,18 @@ function App() {
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const sign = () => {
+  const sign = (inputRef) => {
 
     ref.count = 0;
     
-    var str = transcript.toUpperCase();
+    var str = inputRef.current.value.toUpperCase();
     
     for(let ch of str){
-      if (ch === 'A'){
-        alphabets.A(ref);
+      try{
+        alphabets[ch](ref);
       }
-      else if(ch === 'B'){
-        alphabets.B(ref);
-      }
-      else if(ch === 'C'){
-        alphabets.C(ref);
-      }
-      else if(ch === 'D'){
-        alphabets.D(ref);
-      }
-      else if(ch === 'E'){
-        alphabets.E(ref);
-      }
-      else if(ch === 'F'){
-        alphabets.F(ref);
-      }
-      else if(ch === 'G'){
-        alphabets.G(ref);
-      }
-      else if(ch === 'H'){
-        alphabets.H(ref);
-      }
-      else if(ch === 'I'){
-        alphabets.I(ref);
-      }
-      else if(ch === 'L'){
-        alphabets.L(ref);
-      }
-      else if(ch === 'M'){
-        alphabets.M(ref);
-      }
-      else if(ch === 'N'){
-        alphabets.N(ref);
-      }
-      else if(ch === 'O'){
-        alphabets.O(ref);
-      }
-      else if(ch === 'P'){
-        alphabets.P(ref);
-      }
-      else if(ch === 'Q'){
-        alphabets.Q(ref);
-      }
-      else if(ch === 'R'){
-        alphabets.R(ref);
-      }
-      else if(ch === 'T'){
-        alphabets.T(ref);
-      }
-      else if(ch === 'U'){
-        alphabets.U(ref);
-      }
-      else if(ch === 'V'){
-        alphabets.V(ref);
-      }
-      else if(ch === 'X'){
-        alphabets.X(ref);
-      }
-      else{
-        
+      catch(e){
+        continue;
       }
     }
   }
@@ -226,23 +172,30 @@ function App() {
           <label className='label-style'>
             Processed Text
           </label>
-          <textarea rows={5} value={text} className='w-100 input-style' readOnly />
+          <textarea rows={3} value={text} className='w-100 input-style' readOnly />
           <label className='label-style'>
             Speech Recognition: {listening ? 'on' : 'off'}
           </label>
           <div className='space-between'>
-            <button className="btn btn-primary btn-style btn-half" onClick={startListening}>
+            <button className="btn btn-primary btn-style w-33" onClick={startListening}>
               Mic On <i className="fa fa-microphone"/>
             </button>
-            <button className="btn btn-primary btn-style btn-half" onClick={stopListening}>
+            <button className="btn btn-primary btn-style w-33" onClick={stopListening}>
               Mic Off <i className="fa fa-microphone-slash"/>
             </button>
+            <button className="btn btn-primary btn-style w-33" onClick={resetTranscript}>
+              Clear
+            </button>
           </div>
-          <textarea rows={5} value={transcript} placeholder='Speech input ...' className='w-100 input-style' />
-          <button className="btn btn-primary col-md-12 btn-style" onClick={resetTranscript}>
-            Clear Transcript
+          <textarea rows={3} ref={textFromAudio} value={transcript} placeholder='Speech input ...' className='w-100 input-style' />
+          <button onClick={() => {sign(textFromAudio)}} className='btn btn-primary w-100 btn-style btn-start'>
+            Start Animations
           </button>
-          <button onClick={sign} className='btn btn-primary w-100 btn-style btn-start'>
+          <label className='label-style'>
+            Text Input
+          </label>
+          <textarea rows={3} ref={textFromInput} placeholder='Text input ...' className='w-100 input-style' />
+          <button onClick={() => {sign(textFromInput)}} className='btn btn-primary w-100 btn-style btn-start'>
             Start Animations
           </button>
         </div>
