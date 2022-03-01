@@ -148,8 +148,20 @@ function App() {
       else if(ch === 'G'){
         alphabets.G(ref);
       }
+      else if(ch === 'H'){
+        alphabets.H(ref);
+      }
       else if(ch === 'I'){
         alphabets.I(ref);
+      }
+      else if(ch === 'L'){
+        alphabets.L(ref);
+      }
+      else if(ch === 'M'){
+        alphabets.M(ref);
+      }
+      else if(ch === 'N'){
+        alphabets.N(ref);
       }
       else if(ch === 'O'){
         alphabets.O(ref);
@@ -226,7 +238,7 @@ function App() {
               Mic Off <i className="fa fa-microphone-slash"/>
             </button>
           </div>
-          <textarea rows={5} value={transcript} className='w-100 input-style' />
+          <textarea rows={5} value={transcript} placeholder='Speech input ...' className='w-100 input-style' />
           <button className="btn btn-primary col-md-12 btn-style" onClick={resetTranscript}>
             Clear Transcript
           </button>
