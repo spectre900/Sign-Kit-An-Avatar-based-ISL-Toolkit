@@ -16,11 +16,15 @@ import { O } from './Alphabets/O';
 import { P } from './Alphabets/P';
 import { Q } from './Alphabets/Q';
 import { R } from './Alphabets/R';
+import { S } from './Alphabets/S';
 import { T } from './Alphabets/T';
 import { U } from './Alphabets/U';
 import { V } from './Alphabets/V';
+import { W } from './Alphabets/W';
 import { X } from './Alphabets/X';
+import { Y } from './Alphabets/Y';
+import { Z } from './Alphabets/Z';
 
 export {
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, T, U, V, X,
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
 }

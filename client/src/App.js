@@ -19,6 +19,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 
 function App() {
   const [text, setText] = useState("");
+  const [inputText, setInputText] = useState("");
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
   const [pause, setPause] = useState(800);
@@ -128,6 +129,7 @@ function App() {
     ref.count = 0;
     
     var str = inputRef.current.value.toUpperCase();
+    setInputText(str)
     
     for(let ch of str){
       try{
@@ -144,13 +146,13 @@ function App() {
     let i=0, count=0;
     let charCount = Math.floor((animationCount+1)/2);
 
-    while(count<charCount && i<transcript.length) {
-      if(transcript[i] !== ' ')
+    while(count<charCount && i<inputText.length) {
+      if(inputText[i] !== ' ')
         count++;
       i++;
     }
 
-    let processedText = transcript.substring(0, i);
+    let processedText = inputText.substring(0, i);
     setText(processedText)
   }
 
@@ -206,8 +208,8 @@ function App() {
           <p className='bot-label'>
             Select Avatar
           </p>
-          <img src={xbotPic} className='bot-image col-md-11' onClick={()=>{setBot(xbot)}}/>
-          <img src={ybotPic} className='bot-image col-md-11' onClick={()=>{setBot(ybot)}}/>
+          <img src={xbotPic} className='bot-image col-md-11' onClick={()=>{setBot(xbot)}} alt='Avatar 1: XBOT'/>
+          <img src={ybotPic} className='bot-image col-md-11' onClick={()=>{setBot(ybot)}} alt='Avatar 2: YBOT'/>
           <p className='label-style'>
             Animation Speed: {Math.round(speed*100)/100}
           </p>
