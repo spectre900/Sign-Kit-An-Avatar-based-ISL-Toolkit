@@ -1,3 +1,7 @@
+body {
+    padding-top: 70px;
+}
+
 .heading{
     margin-top: 30px;
     text-align: center;
@@ -64,4 +68,35 @@ canvas{
 
 i{
     margin-left: 20px;
+}
+
+.home-gradient {
+    background: rgb(33,37,41);
+    background: linear-gradient(180deg, rgba(33,37,41,1) 6%, rgba(9,9,121,1) 45%, rgba(12,186,235,0.5186449579831933) 100%);
+    height: calc(100vh - 70px);
+    flex-direction: column
+}
+
+.divider {
+    display: block;
+    height: 4px;
+    width: 5rem !important;
+    background: #f76c2f;
+}
+
+.section-heading {
+    color: red;
+}
+
+.normal-text {
+    font-size: large;
+}
+
+.footer-text, .footer-link {
+    text-decoration: none;
+    color:darkgray;
+}
+
+.footer-link:hover {
+    color: white;
 }
