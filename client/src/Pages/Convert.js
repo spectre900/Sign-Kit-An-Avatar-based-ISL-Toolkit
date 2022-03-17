@@ -53,13 +53,13 @@ function Convert() {
 
     ref.camera = new THREE.PerspectiveCamera(
         30,
-        window.innerWidth*0.57 / window.innerHeight,
+        window.innerWidth*0.57 / (window.innerHeight - 70),
         0.1,
         1000
     )
 
     ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight);
+    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight - 70);
     document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 
@@ -168,9 +168,6 @@ function Convert() {
     <div className='container-fluid'>
       <div className='row'>
         <div className='col-md-3'>
-          <h1 className='heading'>
-            Audio to Sign Language
-          </h1>
           <label className='label-style'>
             Processed Text
           </label>

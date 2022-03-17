@@ -19,7 +19,6 @@ function Navbar() {
                         <li className="nav-item"><Link to='/sign-kit/convert' className="nav-link">Convert</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/learn-sign' className="nav-link">Learn Sign</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/videos' className="nav-link">Videos</Link></li>
-                        <li className="nav-item"><Link to='/sign-kit/about-us' className="nav-link">About us</Link></li>
                     </ul>
                 </div>
             </div>

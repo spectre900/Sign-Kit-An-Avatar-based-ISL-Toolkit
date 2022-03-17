@@ -5,7 +5,6 @@ import Convert from './Pages/Convert';
 import Home from './Pages/Home';
 import LearnSign from './Pages/LearnSign';
 import Videos from './Pages/Videos';
-import About from './Pages/About';
 import Navbar from './Components/Navbar';
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
           <Route exact path='/sign-kit/convert' element={<Convert />} />
           <Route exact path='/sign-kit/learn-sign' element={<LearnSign />} />
           <Route exact path='/sign-kit/videos' element={<Videos />} />
-          <Route exact path='/sign-kit/about-us' element={<About />} />
           <Route exact path='*' element={<Home/>} />
         </Routes>
       </div>
