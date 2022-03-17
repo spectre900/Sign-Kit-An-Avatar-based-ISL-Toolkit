@@ -36,7 +36,7 @@ mongoose
   );
 
 // Routes
-app.use('/sign-kit/videos', homeRoutes)
+app.use('/sign-kit/videos', videoRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

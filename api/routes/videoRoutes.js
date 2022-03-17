@@ -61,4 +61,4 @@ router.post('/create-video', async(req, res, next) => {
     }
 })
 
-module.exports(router)
+module.exports = router
