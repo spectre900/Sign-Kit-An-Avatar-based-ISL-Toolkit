@@ -100,3 +100,17 @@ i{
 .footer-link:hover {
     color: white;
 }
+
+.card-footer-style {
+    background-color: darkblue !important;
+    color: white !important;
+    
+}
+
+.card-background {
+    background:  linear-gradient(50deg, rgb(191, 231, 241), #fff) !important;
+}
+
+.card-background:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
