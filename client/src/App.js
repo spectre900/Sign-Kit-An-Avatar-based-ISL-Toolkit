@@ -6,6 +6,7 @@ import Home from './Pages/Home';
 import LearnSign from './Pages/LearnSign';
 import Videos from './Pages/Videos';
 import Navbar from './Components/Navbar';
+import CreateVideo from './Pages/CreateVideo';
 
 function App() {
   return(
