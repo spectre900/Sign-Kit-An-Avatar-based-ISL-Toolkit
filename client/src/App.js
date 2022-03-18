@@ -7,6 +7,7 @@ import LearnSign from './Pages/LearnSign';
 import Videos from './Pages/Videos';
 import Navbar from './Components/Navbar';
 import CreateVideo from './Pages/CreateVideo';
+import Footer from './Components/Footer';
 
 function App() {
   return(
@@ -18,8 +19,10 @@ function App() {
           <Route exact path='/sign-kit/convert' element={<Convert />} />
           <Route exact path='/sign-kit/learn-sign' element={<LearnSign />} />
           <Route exact path='/sign-kit/videos' element={<Videos />} />
+          <Route exact path='/sign-kit/create-video' element={<CreateVideo />} />
           <Route exact path='*' element={<Home/>} />
         </Routes>
+        <Footer />
       </div>
     </Router>
   )

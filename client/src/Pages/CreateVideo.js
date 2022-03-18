@@ -1,121 +1,265 @@
-import React, { useState } from 'react'
-import { Row, Form, Col, InputGroup, Button} from 'react-bootstrap'
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom'
+import { Row, Form, Col, Button } from "react-bootstrap";
+import { baseURL } from "../Config/config";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import "font-awesome/css/font-awesome.min.css";
+import axios from "axios";
+import ConfirmModal from "../Components/CreateVideo/ConfirmModal";
 
 function CreateVideo() {
-    const [video, setVideo] = useState({
-        title: '',
-        desc: '',
-        createdBy: '',
-        content: ''
-    })
-    const [validated, setValidated] = useState(false);
+  const [video, setVideo] = useState({
+    title: "",
+    desc: "",
+    createdBy: "",
+  });
+  const [validated, setValidated] = useState(false);
+  const [mode, setMode] = useState("text");
+  const [text, setText] = useState("");
+  const [file, setFile] = useState("");
+  const [videoId, setVideoId] = useState("")
+  const [showModal, setShowModal] = useState(false)
+  const { transcript, listening, resetTranscript } = useSpeechRecognition();
+  const navigate = useNavigate()
 
-    const handleInputChanges = (event) => {
-        setVideo(prev => ({
-            ...prev,
-            [event.target.id]: event.target.value
-        }))
+  const handleInputChanges = (event) => {
+    setVideo((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const startListening = () => {
+    SpeechRecognition.startListening({ continuous: true });
+  };
+
+  const stopListening = () => {
+    SpeechRecognition.stopListening();
+  };
+
+  const validateVideo = () => {
+    if (!video.title || !video.desc || !video.createdBy) return false;
+    else if (mode === "text" && !text) return false;
+    else if (mode === "file" && !file) return false;
+    else if (mode === "speech" && !transcript) return false;
+    return true;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (validateVideo() === false) {
+      event.stopPropagation();
+      setValidated(true);
+      return;
     }
 
-    const validateVideo = () => {
-        if(!video.title)
-            return false
-        return true
-    }
+    setValidated(true);
 
-    const handleSubmission = (event) => {
-        event.preventDefault()
+    let content = "";
+    if (mode === "text") content = text;
+    else if (mode === "file") content = await file.text();
+    else if (mode === "speech") content = transcript;
 
-        if(!validateVideo) {
-            event.stopPropagation()
-            return false
-        }
-    }
+    const newVideo = {
+      ...video,
+      content: content,
+    };
 
-    // return (
-    //     <div className='container d-flex flex-column align-items-center'>
-    //         <div className='display-5 mt-5'>
-    //             Create a New Video!
-    //         </div>
-    //         <div className='lead mb-5'>
-    //             Fill this form and provide your content to create a video using ISL in a few clicks!
-    //         </div>
+    axios
+      .post(`${baseURL}/videos/create-video`, newVideo)
+      .then((res) => {
+        setVideoId(res.data.videoId)
+        setShowModal(true)
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    //         <form className='needs-validation' noValidate onSubmit={handleSubmission}>
-    //             <div>
-    //                 <label htmlFor="title" className="form-label">First name</label>
-    //                 <input type="text" className="form-control" id="title" value={video.title} onChange={handleInputChanges} required />
-    //                 <div className="valid-feedback">
-    //                     Looks good!
-    //                 </div>
-    //                 <div className="invalid-feedback">
-    //                     Please choose a title.
-    //                 </div>
-    //             </div>
+  return (
+    <div className="container d-flex flex-column align-items-center">
+      <div className="display-5 mt-5 px-2 text-center">Create a New Video!</div>
+      <div className="lead mb-5 px-2 text-center">
+        Fill this form and provide your content to create a video using ISL in a
+        few clicks!
+      </div>
 
-    //             <div>
-    //                 <button className="btn btn-primary" type="submit">Submit form</button>
-    //             </div>
-    //         </form>
-    //     </div>
-    // )
+      <Row className="container">
+        <Form
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+          className="d-flex flex-column justify-content-center align-items-center p-0"
+        >
+          <Form.Group controlId="title" as={Col} xs="12" md="7" className="my-3">
+            <Form.Label>Title of Video</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Title of Video"
+              value={video.title}
+              name="title"
+              onChange={handleInputChanges}
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please enter a title.
+            </Form.Control.Feedback>
+          </Form.Group>
 
+          <Form.Group controlId="desc" as={Col} xs="12" md="7" className="mx-0 px-0 my-3">
+            <Form.Label>Description of Video</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Description of Video"
+              name="desc"
+              onChange={handleInputChanges}
+              as="textarea"
+              rows={4}
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please enter a description.
+            </Form.Control.Feedback>
+          </Form.Group>
 
+          <Form.Group controlId="createdBy" as={Col} xs="12" md="7" className="my-3">
+            <Form.Label>Name of Creator</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Name of Creator"
+              name="createdBy"
+              onChange={handleInputChanges}
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please enter your name as the creator.
+            </Form.Control.Feedback>
+          </Form.Group>
 
-    const handleSubmit = (event) => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-    
-        setValidated(true);
-      };
-    
-      return (
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Form.Group as={Col} md="4" controlId="validationCustom01">
-              <Form.Label>First name</Form.Label>
+          <Form.Group controlId="mode" as={Col} xs="12" md="7" className="my-3">
+            <Form.Label>Select a mode to provide your content</Form.Label>
+            <Form.Select
+              required
+              placeholder="Select a mode"
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+            >
+              <option value="text">Type the text</option>
+              <option value="speech">Speak through mic</option>
+              <option value="file">Upload a text file</option>
+            </Form.Select>
+          </Form.Group>
+
+          {mode === "text" && (
+            <Form.Group controlId="text" as={Col} xs="12" md="7" className="my-3">
+              <Form.Label>Enter your content here</Form.Label>
               <Form.Control
                 required
                 type="text"
-                placeholder="First name"
-                value={video.title}
-                id='title'
-                onChange={handleInputChanges}
+                placeholder="Type your content here..."
+                name="content"
+                onChange={(e) => setText(e.target.value)}
+                as="textarea"
+                rows={8}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please type your content.
+              </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="4" controlId="validationCustom02">
-              <Form.Label>Last name</Form.Label>
+          )}
+
+          {mode === "file" && (
+            <Form.Group controlId="formFile" as={Col} xs="12" md="7" className="my-3">
+              <Form.Label>Upload your text (.txt) file here</Form.Label>
+              <Form.Control
+                type="file"
+                accept=".txt"
+                onChange={(e) => setFile(e.target.files[0])}
+                required
+              />
+              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please upload a text file here.
+              </Form.Control.Feedback>
+            </Form.Group>
+          )}
+
+          {mode === "speech" && (
+            <div className="col-md-7 d-flex flex-column justify-content-center my-3">
+              <div className="row d-flex justify-content-center">
+                <label className="mb-2">
+                  Speech Recognition: {listening ? "on" : "off"}
+                </label>
+                <button
+                  type="button"
+                  className="btn btn-primary col-md-3 mx-3"
+                  onClick={startListening}
+                >
+                  Mic On <i className="fa fa-microphone" />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary col-md-3 mx-3"
+                  onClick={stopListening}
+                >
+                  Mic Off <i className="fa fa-microphone-slash" />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary col-md-3 mx-3"
+                  onClick={resetTranscript}
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          )}
+
+          {mode === "speech" && (
+            <Form.Group
+              controlId="speech-text"
+              as={Col}
+              xs="12"
+              md="7"
+              className="my-3"
+            >
+              <Form.Label>
+                Use the controls and speak through your mic
+              </Form.Label>
               <Form.Control
                 required
+                readOnly
                 type="text"
-                placeholder="Last name"
-                defaultValue="Otto"
+                placeholder="Your content will be displayed here..."
+                name="content"
+                value={transcript}
+                as="textarea"
+                rows={8}
               />
               <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                Please speak through your mic.
+              </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-              <Form.Label>Username</Form.Label>
-              <InputGroup hasValidation>
-                <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-                <Form.Control
-                  type="text"
-                  placeholder="Username"
-                  aria-describedby="inputGroupPrepend"
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  Please choose a username.
-                </Form.Control.Feedback>
-              </InputGroup>
-            </Form.Group>
-          </Row>
-          <Button type="submit">Submit form</Button>
+          )}
+
+          <Button type="submit" className='mt-3'>Submit form</Button>
         </Form>
-      );
+      </Row>
+
+      <ConfirmModal show={showModal} onHide={(e) => {
+        setShowModal(false)
+        navigate('/sign-kit/videos', { replace: true })
+      }} videoId={videoId} />
+    </div>
+  );
 }
 
-export default CreateVideo
+export default CreateVideo;

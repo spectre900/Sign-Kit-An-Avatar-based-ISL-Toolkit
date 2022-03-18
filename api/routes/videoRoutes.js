@@ -45,10 +45,11 @@ router.post('/create-video', async(req, res, next) => {
         });
     } else {
         try {
-            await videoSchema.create(req.body)
+            let video = await videoSchema.create(req.body)
             res.json({
                 success: true,
                 msg: "New video created!",
+                videoId: video._id
             });
         } catch (err) {
             console.log(err)

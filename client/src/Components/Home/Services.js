@@ -27,7 +27,7 @@ function Services() {
         </div>
         <div className="card-deck">
           <div className="row">
-            <div className="col-lg-4 mb-5">
+            <div className="col-lg-4">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgConvert} alt="Convert Clipart" />
                 <div className="card-body">
@@ -40,10 +40,10 @@ function Services() {
                     happen!
                   </p>
                 </div>
-                <div class="card-footer p-0 m-0" style={{ border: "none" }}>
+                <div className="card-footer p-0 m-0" style={{ border: "none" }}>
                   <Link
                     to="/sign-kit/convert"
-                    class="btn btn-info w-100 p-3"
+                    className="btn btn-info w-100 p-3"
                     style={{ fontSize: "large" }}
                   >
                     EXPLORE NOW!
@@ -51,7 +51,7 @@ function Services() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 mb-5">
+            <div className="col-lg-4">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgLearnSign} alt="Learn Sign Clipart" />
                 <hr className="m-0"></hr>
@@ -64,10 +64,10 @@ function Services() {
                     thing, you know!
                   </p>
                 </div>
-                <div class="card-footer p-0 m-0" style={{ border: "none" }}>
+                <div className="card-footer p-0 m-0" style={{ border: "none" }}>
                   <Link
                     to="/sign-kit/learn-sign"
-                    class="btn btn-info w-100 p-3"
+                    className="btn btn-info w-100 p-3"
                     style={{ fontSize: "large" }}
                   >
                     EXPLORE NOW!
@@ -75,7 +75,7 @@ function Services() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4 mb-5">
+            <div className="col-lg-4">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgVideos} alt="Videos Clipart" />
                 <div className="card-body">
@@ -88,10 +88,10 @@ function Services() {
                     content! Share your vidoes with the entire community!
                   </p>
                 </div>
-                <div class="card-footer p-0 m-0" style={{ border: "none" }}>
+                <div className="card-footer p-0 m-0" style={{ border: "none" }}>
                   <Link
                     to="/sign-kit/videos"
-                    class="btn btn-info w-100 p-3"
+                    className="btn btn-info w-100 p-3"
                     style={{ fontSize: "large" }}
                   >
                     EXPLORE NOW!
