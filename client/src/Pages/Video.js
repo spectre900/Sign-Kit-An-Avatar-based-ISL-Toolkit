@@ -11,6 +11,7 @@ import ybot from '../Models/ybot/ybot.glb';
 import xbotPic from '../Models/xbot/xbot.png';
 import ybotPic from '../Models/ybot/ybot.png';
 
+import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
 import { defaultPose } from '../Animations/defaultPose';
 
@@ -94,28 +95,32 @@ function Video() {
     requestAnimationFrame(ref.animate);
     if(ref.animations[0].length){
         if(!ref.flag) {
-          for(let i=0;i<ref.animations[0].length;){
-            let [boneName, action, axis, limit, sign] = ref.animations[0][i]
-            if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] += speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else{
-                ref.animations[0].splice(i, 1);
+          if(ref.animations[0][0]==='add-text'){
+            setText(text + ref.animations[0][1]);
+            ref.animations.shift();
+          }
+          else{
+            for(let i=0;i<ref.animations[0].length;){
+              let [boneName, action, axis, limit, sign] = ref.animations[0][i]
+              if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
+                  ref.avatar.getObjectByName(boneName)[action][axis] += speed;
+                  ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
+                  i++;
+              }
+              else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
+                  ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
+                  ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
+                  i++;
+              }
+              else{
+                  ref.animations[0].splice(i, 1);
+              }
             }
           }
         }
     }
     else {
       ref.flag = true;
-      ref.count += 1;
-      showProcessedText(ref.count);
       setTimeout(() => {
         ref.flag = false
       }, pause);
@@ -124,28 +129,38 @@ function Video() {
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const sign = (str) => {
+  const sign = (inputRef) => {
+    
+    var str = inputRef.current.value.toUpperCase();
+    var strWords = str.split(' ');
+    setText('')
 
-    ref.count = 0;
-    
-    str = str.toUpperCase();
-    setInputText(str)
-    
-    for(let ch of str){
-      try{
-        alphabets[ch](ref);
+    for(let word of strWords){
+      if(words[word]){
+        ref.animations.push(['add-text', word+' ']);
+        words[word](ref);
+        
       }
-      catch(e){
-        continue;
+      else{
+        for(const [index, ch] of word.split('').entries()){
+          if(index === word.length-1)
+            ref.animations.push(['add-text', ch+' ']);
+          else 
+            ref.animations.push(['add-text', ch]);
+          alphabets[ch](ref);
+          
+        }
       }
     }
   }
 
   const animateFromID = () => {
       const videoID = id.current.value;
+      console.log(videoID)
       axios.get(`http://localhost:9000/sign-kit/videos/${videoID}`).then((res) => {
         console.log(res.data);
         sign(res.data.content);
+        console.log('vnvnv')
       }).catch(err => {
         console.log(err)
         setInvalidId(true)

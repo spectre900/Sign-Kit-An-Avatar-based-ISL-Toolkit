@@ -20,7 +20,6 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 
 function Convert() {
   const [text, setText] = useState("");
-  const [inputText, setInputText] = useState("");
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
   const [pause, setPause] = useState(800);
@@ -95,28 +94,32 @@ function Convert() {
     requestAnimationFrame(ref.animate);
     if(ref.animations[0].length){
         if(!ref.flag) {
-          for(let i=0;i<ref.animations[0].length;){
-            let [boneName, action, axis, limit, sign] = ref.animations[0][i]
-            if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] += speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else{
-                ref.animations[0].splice(i, 1);
+          if(ref.animations[0][0]==='add-text'){
+            setText(text + ref.animations[0][1]);
+            ref.animations.shift();
+          }
+          else{
+            for(let i=0;i<ref.animations[0].length;){
+              let [boneName, action, axis, limit, sign] = ref.animations[0][i]
+              if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
+                  ref.avatar.getObjectByName(boneName)[action][axis] += speed;
+                  ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
+                  i++;
+              }
+              else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
+                  ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
+                  ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
+                  i++;
+              }
+              else{
+                  ref.animations[0].splice(i, 1);
+              }
             }
           }
         }
     }
     else {
       ref.flag = true;
-      ref.count += 1;
-      showProcessedText(ref.count);
       setTimeout(() => {
         ref.flag = false
       }, pause);
@@ -126,38 +129,28 @@ function Convert() {
   }
 
   const sign = (inputRef) => {
-
-    words.TIME(ref);
-    return;
-
-    ref.count = 0;
     
     var str = inputRef.current.value.toUpperCase();
-    setInputText(str)
-    
-    for(let ch of str){
-      try{
-        alphabets[ch](ref);
+    var strWords = str.split(' ');
+    setText('')
+
+    for(let word of strWords){
+      if(words[word]){
+        ref.animations.push(['add-text', word+' ']);
+        words[word](ref);
+        
       }
-      catch(e){
-        continue;
+      else{
+        for(const [index, ch] of word.split('').entries()){
+          if(index === word.length-1)
+            ref.animations.push(['add-text', ch+' ']);
+          else 
+            ref.animations.push(['add-text', ch]);
+          alphabets[ch](ref);
+          
+        }
       }
     }
-  }
-
-  const showProcessedText = (animationCount) => {
-    
-    let i=0, count=0;
-    let charCount = Math.floor((animationCount+1)/2);
-
-    while(count<charCount && i<inputText.length) {
-      if(inputText[i] !== ' ')
-        count++;
-      i++;
-    }
-
-    let processedText = inputText.substring(0, i);
-    setText(processedText)
   }
 
   const startListening = () =>{
