@@ -9,6 +9,7 @@ import ybot from '../Models/ybot/ybot.glb';
 import xbotPic from '../Models/xbot/xbot.png';
 import ybotPic from '../Models/ybot/ybot.png';
 
+import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
 import { defaultPose } from '../Animations/defaultPose';
 
@@ -125,6 +126,9 @@ function Convert() {
   }
 
   const sign = (inputRef) => {
+
+    words.TIME(ref);
+    return;
 
     ref.count = 0;
     
