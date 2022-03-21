@@ -18,7 +18,7 @@ function Navbar() {
                         <li className="nav-item"><Link to='/sign-kit/home' className="nav-link active">Home</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/convert' className="nav-link">Convert</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/learn-sign' className="nav-link">Learn Sign</Link></li>
-                        <li className="nav-item"><Link to='/sign-kit/videos' className="nav-link">Videos</Link></li>
+                        <li className="nav-item"><Link to='/sign-kit/all-videos' className="nav-link">Videos</Link></li>
                     </ul>
                 </div>
             </div>

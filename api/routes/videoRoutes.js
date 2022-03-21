@@ -9,7 +9,7 @@ const validateVideo = (video) => {
 
 router.get('/all-videos', async (req, res, next) => {
     try {
-        videos = await videoSchema.find({})
+        videos = await videoSchema.find({type: 'PUBLIC'})
         res.json(videos)
     } catch (err) {
         console.log(err)

@@ -1,216 +1,170 @@
-import '../App.css'
-import axios from 'axios';
-import React, { useState, useEffect, useRef } from "react";
-import Slider from 'react-input-slider';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'font-awesome/css/font-awesome.min.css';
-
-import xbot from '../Models/xbot/xbot.glb';
-import ybot from '../Models/ybot/ybot.glb';
-import xbotPic from '../Models/xbot/xbot.png';
-import ybotPic from '../Models/ybot/ybot.png';
-
-import * as alphabets from '../Animations/alphabets';
-import { defaultPose } from '../Animations/defaultPose';
-
-import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Row, Col, Form, Button } from "react-bootstrap";
+import VideoCard from "../Components/Videos/VideoCard";
+import { baseURL } from "../Config/config";
 
 function Videos() {
-  const [text, setText] = useState("");
-  const [inputText, setInputText] = useState("");
-  const [bot, setBot] = useState(ybot);
-  const [speed, setSpeed] = useState(0.1);
-  const [pause, setPause] = useState(800);
+  const [videos, setVideos] = useState([]);
+  const [videoId, setVideoId] = useState("");
+  const [validated, setValidated] = useState(false);
+  const navigate = useNavigate();
 
-  const componentRef = useRef({});
-  const { current: ref } = componentRef;
-
-  let id = React.createRef();
-
-  useEffect(() => {
-
-    ref.flag = false;
-    ref.pending = false;
-
-    ref.animations = [];
-    ref.characters = [];
-
-    ref.scene = new THREE.Scene();
-    ref.scene.background = new THREE.Color(0xdddddd);
-
-    const spotLight = new THREE.SpotLight(0xffffff, 2);
-    spotLight.position.set(0, 5, 5);
-    ref.scene.add(spotLight);
-
-    ref.camera = new THREE.PerspectiveCamera(
-        30,
-        window.innerWidth*0.57 / (window.innerHeight - 70),
-        0.1,
-        1000
-    )
-
-    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight - 70);
-    document.getElementById("canvas").innerHTML = "";
-    document.getElementById("canvas").appendChild(ref.renderer.domElement);
-
-    ref.camera.position.z = 1.6;
-    ref.camera.position.y = 1.4;
-
-    let loader = new GLTFLoader();
-    loader.load(
-      bot,
-      (gltf) => {
-        gltf.scene.traverse((child) => {
-          if ( child.type === 'SkinnedMesh' ) {
-            child.frustumCulled = false;
-          }
-    });
-        ref.avatar = gltf.scene;
-        ref.scene.add(ref.avatar);
-        defaultPose(ref);
-      },
-      (xhr) => {
-        console.log(xhr);
-      }
-    );
-
-  }, [ref, bot]);
-
-  ref.animate = () => {
-    if(ref.animations.length === 0){
-        ref.pending = false;
-      return ;
-    }
-    requestAnimationFrame(ref.animate);
-    if(ref.animations[0].length){
-        if(!ref.flag) {
-          for(let i=0;i<ref.animations[0].length;){
-            let [boneName, action, axis, limit, sign] = ref.animations[0][i]
-            if(sign === "+" && ref.avatar.getObjectByName(boneName)[action][axis] < limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] += speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.min(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else if(sign === "-" && ref.avatar.getObjectByName(boneName)[action][axis] > limit){
-                ref.avatar.getObjectByName(boneName)[action][axis] -= speed;
-                ref.avatar.getObjectByName(boneName)[action][axis] = Math.max(ref.avatar.getObjectByName(boneName)[action][axis], limit);
-                i++;
-            }
-            else{
-                ref.animations[0].splice(i, 1);
-            }
-          }
-        }
-    }
-    else {
-      ref.flag = true;
-      ref.count += 1;
-      showProcessedText(ref.count);
-      setTimeout(() => {
-        ref.flag = false
-      }, pause);
-      ref.animations.shift();
-    }
-    ref.renderer.render(ref.scene, ref.camera);
-  }
-
-  const sign = (str) => {
-
-    ref.count = 0;
-    
-    str = str.toUpperCase();
-    setInputText(str)
-    
-    for(let ch of str){
-      try{
-        alphabets[ch](ref);
-      }
-      catch(e){
-        continue;
-      }
-    }
-  }
-
-  const animateFromID = () => {
-      var videoID = id.current.value;
-      var videoText = axios.get('http://localhost:9000/sign-kit/videos/:' + videoText).then((response) => {
-          console.log(response);
-        sign();
-      }).catch(err => {
-
+  const retrieveVideos = () => {
+    axios
+      .get(`${baseURL}/videos/all-videos`)
+      .then((res) => {
+        setVideos(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-  }
+  };
 
-  const showProcessedText = (animationCount) => {
-    
-    let i=0, count=0;
-    let charCount = Math.floor((animationCount+1)/2);
+  useEffect(retrieveVideos, []);
 
-    while(count<charCount && i<inputText.length) {
-      if(inputText[i] !== ' ')
-        count++;
-      i++;
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!videoId) {
+      event.stopPropagation();
+      setValidated(true);
+      return;
     }
 
-    let processedText = inputText.substring(0, i);
-    setText(processedText)
-  }
+    setValidated(true);
+    navigate(`/sign-kit/video/${videoId}`, { replace: false });
+  };
+
+  const handleClick = (videoId) => {
+    navigate(`/sign-kit/video/${videoId}`, { replace: false });
+  };
+
+  const videoList = videos.map((video, index) => (
+    <VideoCard key={index} video={video} handleClick={handleClick} />
+  ));
 
   return (
-    <div className='container-fluid'>
-      <div className='row'>
-        <div className='col-md-3'>
-            <label className='label-style'>
-                Enter video ID
-            </label>
-            <input ref={id} splaceholder='Video ID' className='w-100 input-style' />
-            <button onClick={animateFromID} className='btn btn-primary w-100 btn-style btn-start'>
-                Start Animations
-            </button>
-          <label className='label-style'>
-            Processed Text
-          </label>
-          <textarea rows={10} value={text} className='w-100 input-style' readOnly />
-        </div>
-        <div className='col-md-7'>
-          <div id='canvas'/>
-        </div>
-        <div className='col-md-2'>
-          <p className='bot-label'>
-            Select Avatar
-          </p>
-          <img src={xbotPic} className='bot-image col-md-11' onClick={()=>{setBot(xbot)}} alt='Avatar 1: XBOT'/>
-          <img src={ybotPic} className='bot-image col-md-11' onClick={()=>{setBot(ybot)}} alt='Avatar 2: YBOT'/>
-          <p className='label-style'>
-            Animation Speed: {Math.round(speed*100)/100}
-          </p>
-          <Slider
-            axis="x"
-            xmin={0.05}
-            xmax={0.50}
-            xstep={0.01}
-            x={speed}
-            onChange={({ x }) => setSpeed(x)}
-            className='w-100'
-          />
-          <p className='label-style'>
-            Pause time: {pause} ms
-          </p>
-          <Slider
-            axis="x"
-            xmin={0}
-            xmax={2000}
-            xstep={100}
-            x={pause}
-            onChange={({ x }) => setPause(x)}
-            className='w-100'
-          />
+    <div className="container-fluid d-flex flex-column align-items-center px-0">
+      <div className="container-fluid text-white" style={{backgroundColor: 'rgba(9,9,121)'}}>
+        <div className="container my-5">
+          <div className="display-5 px-2 text-center">
+            Explore ISL Videos!
+          </div>
+          <div className="lead text-center">
+            Welcome to the ISL video section of Sign Kit. Create your own public
+            or private videos, share with your friends and colleagues or browse
+            through the videos created by others and shared with the entire
+            community!
+          </div>
         </div>
       </div>
+
+      <hr />
+
+      <section id="create-video">
+        <div className="container">
+          <div className="row my-4">
+            <div
+              className="col-md-12 d-flex justify-content-center align-items-center"
+              style={{ flexDirection: "column" }}
+            >
+              <div className="h2 section-heading">Create a new video!</div>
+              <div className="col-lg-4 divider my-2" />
+              <div className="text-center normal-text">
+                Create your own video within a few clicks! Provide your content
+                via text, speech or file and keep the videos private or share
+                them with the entire community! Each video generates a video ID
+                which can be used to access the video directly.
+              </div>
+              <Link to='/sign-kit/create-video' className="btn btn-primary mt-4">
+                Create your own Video!
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="hor-line" />
+
+      <section id="Open-video">
+        <div className="container">
+          <div className="row mt-3">
+            <div
+              className="col-md-12 d-flex justify-content-center align-items-center"
+              style={{ flexDirection: "column" }}
+            >
+              <div className="h2 section-heading">Open a video</div>
+              <div className="col-lg-4 divider my-2" />
+              <div className="text-center normal-text">
+                Open a video directly by using the associated video ID!
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Row className="container mb-3">
+        <Form
+          noValidate
+          validated={validated}
+          onSubmit={handleSubmit}
+          className="d-flex flex-column justify-content-center align-items-center p-0"
+        >
+          <Form.Group
+            controlId="videoId"
+            as={Col}
+            xs="12"
+            md="7"
+            className="my-3"
+          >
+            <Form.Label>Enter the Video ID</Form.Label>
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter the Video ID here..."
+              value={videoId}
+              name="title"
+              onChange={(e) => setVideoId(e.target.value)}
+            />
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please enter a video Id.
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button type="submit" className="my-2">
+            Open Video
+          </Button>
+        </Form>
+      </Row>
+
+      <div className="hor-line" />
+
+      <section id="Open-video">
+        <div className="container">
+          <div className="row mt-3">
+            <div
+              className="col-md-12 d-flex justify-content-center align-items-center"
+              style={{ flexDirection: "column" }}
+            >
+              <div className="h2 section-heading">Your Video Feed</div>
+              <div className="col-lg-4 divider my-2" />
+              <div className="text-center normal-text">
+                Browse through the ISL videos created by others and shared with
+                the entire community!
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="row container d-flex flex-column justify-content-center align-items-center">
+        {videoList}
+      </div>
     </div>
-  )
+  );
 }
 
 export default Videos;

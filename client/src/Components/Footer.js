@@ -28,7 +28,7 @@ function Footer() {
                             <hr className="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style={{width:'60px'}} />
                             <p><Link to='/sign-kit/convert' className='footer-link'>Convert</Link></p>
                             <p><Link to='/sign-kit/learn-sign' className='footer-link'>Learn Sign</Link></p>
-                            <p><Link to='/sign-kit/videos' className='footer-link'>Videos</Link></p>
+                            <p><Link to='/sign-kit/all-videos' className='footer-link'>Videos</Link></p>
                         </div>
 
                         <div className="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Form, Col, Button, Modal } from "react-bootstrap";
+import { Form, Button, Modal } from "react-bootstrap";
 
 function ConfirmModal({ show, onHide, videoId }) {
     const handleClick = (videoId) => {

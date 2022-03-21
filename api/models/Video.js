@@ -17,6 +17,11 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Creator is required!']
     },
+    type: {
+        type: String,
+        enum: ["PUBLIC", "PRIVATE"],
+        required: [true, "Video type is required!"],
+    },
     content: {
         type: String,
         required: [true, 'Content is required!']

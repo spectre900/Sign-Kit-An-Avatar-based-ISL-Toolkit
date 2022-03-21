@@ -8,7 +8,7 @@ function Services() {
   return (
     <section id="services">
       <div className="container">
-        <div className="row my-5">
+        <div className="row mt-5">
           <div
             className="col-md-12 d-flex justify-content-center align-items-center"
             style={{ flexDirection: "column" }}
@@ -27,7 +27,7 @@ function Services() {
         </div>
         <div className="card-deck">
           <div className="row">
-            <div className="col-lg-4">
+            <div className="col-lg-4 mt-5">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgConvert} alt="Convert Clipart" />
                 <div className="card-body">
@@ -51,7 +51,7 @@ function Services() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-lg-4 mt-5">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgLearnSign} alt="Learn Sign Clipart" />
                 <hr className="m-0"></hr>
@@ -75,7 +75,7 @@ function Services() {
                 </div>
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-lg-4 mt-5">
               <div className="card col-lg-12 h-100 d-flex flex-column justify-content-between card-background">
                 <img className="card-img-top" src={imgVideos} alt="Videos Clipart" />
                 <div className="card-body">
@@ -90,7 +90,7 @@ function Services() {
                 </div>
                 <div className="card-footer p-0 m-0" style={{ border: "none" }}>
                   <Link
-                    to="/sign-kit/videos"
+                    to="/sign-kit/all-videos"
                     className="btn btn-info w-100 p-3"
                     style={{ fontSize: "large" }}
                   >

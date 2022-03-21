@@ -14,6 +14,7 @@ function CreateVideo() {
     title: "",
     desc: "",
     createdBy: "",
+    type: "PUBLIC"
   });
   const [validated, setValidated] = useState(false);
   const [mode, setMode] = useState("text");
@@ -142,6 +143,24 @@ function CreateVideo() {
             </Form.Control.Feedback>
           </Form.Group>
 
+          <Form.Group controlId="type" as={Col} xs="12" md="7" className="my-3">
+            <Form.Label>Select the type of video</Form.Label>
+            <Form.Select
+              required
+              placeholder="Select a type"
+              value={video.type}
+              name="type"
+              onChange={handleInputChanges}
+            >
+              <option value="PUBLIC">Public - Your video will be visible to the entire communtiy</option>
+              <option value="PRIVATE">Private - Your video can be accessed by people with whom you share the video ID</option>
+            </Form.Select>
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please select a video type.
+            </Form.Control.Feedback>
+          </Form.Group>
+
           <Form.Group controlId="mode" as={Col} xs="12" md="7" className="my-3">
             <Form.Label>Select a mode to provide your content</Form.Label>
             <Form.Select
@@ -154,6 +173,10 @@ function CreateVideo() {
               <option value="speech">Speak through mic</option>
               <option value="file">Upload a text file</option>
             </Form.Select>
+            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Please select a mode.
+            </Form.Control.Feedback>
           </Form.Group>
 
           {mode === "text" && (
@@ -256,7 +279,7 @@ function CreateVideo() {
 
       <ConfirmModal show={showModal} onHide={(e) => {
         setShowModal(false)
-        navigate('/sign-kit/videos', { replace: true })
+        // navigate('/sign-kit/videos', { replace: true })
       }} videoId={videoId} />
     </div>
   );
