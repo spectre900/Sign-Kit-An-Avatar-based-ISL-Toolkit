@@ -129,9 +129,8 @@ function Video() {
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const sign = (inputRef) => {
-    
-    var str = inputRef.current.value.toUpperCase();
+  const sign = (str) => {
+    str = str.toUpperCase();
     var strWords = str.split(' ');
     setText('')
 
@@ -156,11 +155,8 @@ function Video() {
 
   const animateFromID = () => {
       const videoID = id.current.value;
-      console.log(videoID)
       axios.get(`http://localhost:9000/sign-kit/videos/${videoID}`).then((res) => {
-        console.log(res.data);
         sign(res.data.content);
-        console.log('vnvnv')
       }).catch(err => {
         console.log(err)
         setInvalidId(true)
