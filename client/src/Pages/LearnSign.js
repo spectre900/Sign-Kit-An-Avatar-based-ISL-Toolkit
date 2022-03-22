@@ -9,6 +9,7 @@ import ybot from '../Models/ybot/ybot.glb';
 import xbotPic from '../Models/xbot/xbot.png';
 import ybotPic from '../Models/ybot/ybot.png';
 
+import * as words from '../Animations/words';
 import * as alphabets from '../Animations/alphabets';
 import { defaultPose } from '../Animations/defaultPose';
 
@@ -109,23 +110,9 @@ function LearnSign() {
     ref.renderer.render(ref.scene, ref.camera);
   }
 
-  const sign = (str) => {
-
-    str = str.toUpperCase();
-    
-    for(let ch of str){
-      try{
-        alphabets[ch](ref);
-      }
-      catch(e){
-        continue;
-      }
-    }
-  }
-
-  let buttons = [];
+  let alphaButtons = [];
   for (let i = 0; i < 26; i++) {
-    buttons.push(
+    alphaButtons.push(
         <div className='col-md-3'>
             <button className='signs w-100' onClick={()=>{
               if(ref.animations.length === 0){
@@ -138,13 +125,39 @@ function LearnSign() {
     );
   }
 
+  let wordButtons = [];
+  for (let i = 0; i < words.wordList.length; i++) {
+    wordButtons.push(
+        <div className='col-md-4'>
+            <button className='signs w-100' onClick={()=>{
+              if(ref.animations.length === 0){
+                words[words.wordList[i]](ref);
+              }
+            }}>
+                {words.wordList[i]}
+            </button>
+        </div>
+    );
+  }
+
   return (
     <div className='container-fluid'>
       <div className='row'>
         <div className='col-md-3'>
+            <h1 className='heading'>
+              Alphabets
+            </h1>
             <div className='row'>
                 {
-                    buttons
+                    alphaButtons
+                }
+            </div>
+            <h1 className='heading'>
+              Words
+            </h1>
+            <div className='row'>
+                {
+                    wordButtons
                 }
             </div>
         </div>
