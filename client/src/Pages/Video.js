@@ -19,14 +19,17 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Button, Modal } from "react-bootstrap";
 
+import { baseURL } from '../Config/config'
+
 
 function Video() {
   const [text, setText] = useState("");
-  const [inputText, setInputText] = useState("");
   const [bot, setBot] = useState(ybot);
   const [speed, setSpeed] = useState(0.1);
   const [pause, setPause] = useState(800);
   const [invalidId, setInvalidId] = useState(false)
+  const [title, setTitle] = useState('')
+  const [desc, setDesc] = useState('')
 
   const params = useParams()
 
@@ -155,7 +158,10 @@ function Video() {
 
   const animateFromID = () => {
       const videoID = id.current.value;
-      axios.get(`http://localhost:9000/sign-kit/videos/${videoID}`).then((res) => {
+      axios.get(`${baseURL}/videos/${videoID}`).then((res) => {
+        console.log(res.data)
+        setTitle(res.data.title)
+        setDesc(res.data.desc)
         sign(res.data.content);
       }).catch(err => {
         console.log(err)
@@ -163,36 +169,29 @@ function Video() {
       });
   }
 
-  const showProcessedText = (animationCount) => {
-    
-    let i=0, count=0;
-    let charCount = Math.floor((animationCount+1)/2);
-
-    while(count<charCount && i<inputText.length) {
-      if(inputText[i] !== ' ')
-        count++;
-      i++;
-    }
-
-    let processedText = inputText.substring(0, i);
-    setText(processedText)
-  }
-
   return (
     <div className='container-fluid'>
       <div className='row'>
         <div className='col-md-3'>
-            <label className='label-style'>
-                Video ID
-            </label>
-            <input ref={id} splaceholder='Video ID' className='w-100 input-style' />
-            <button onClick={animateFromID} className='btn btn-primary w-100 btn-style btn-start'>
-                Start Video
-            </button>
           <label className='label-style'>
-            Processed Text
+              Video ID
           </label>
-          <textarea rows={10} value={text} className='w-100 input-style' readOnly />
+          <input ref={id} splaceholder='Video ID' className='w-100 input-style' />
+          <button onClick={animateFromID} className='btn btn-primary w-100 btn-style btn-start mb-3'>
+              Start Video
+          </button>
+          <hr />
+          {title && 
+            <div className='d-flex flex-column justify-content-center align-items-center mt-3'>
+            <label className='h3'>{title}</label>
+            <label>{desc}</label>
+            <div className='w-100'>
+              <label className='label-style mt-4'>
+                Processed Text
+              </label>
+              <textarea rows={10} value={text} className='w-100 input-style mt-2' readOnly />
+              </div>
+          </div>}
         </div>
         <div className='col-md-7'>
           <div id='canvas'/>

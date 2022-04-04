@@ -50,16 +50,16 @@ function Convert() {
     const spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(0, 5, 5);
     ref.scene.add(spotLight);
+    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
 
     ref.camera = new THREE.PerspectiveCamera(
         30,
-        window.innerWidth*0.57 / (window.innerHeight - 70),
+        window.innerWidth * 0.57 / (window.innerHeight - 70),
         0.1,
         1000
     )
+    ref.renderer.setSize(window.innerWidth * 0.57, window.innerHeight - 70);
 
-    ref.renderer = new THREE.WebGLRenderer({ antialias: true });
-    ref.renderer.setSize(window.innerWidth*0.57, window.innerHeight - 70);
     document.getElementById("canvas").innerHTML = "";
     document.getElementById("canvas").appendChild(ref.renderer.domElement);
 

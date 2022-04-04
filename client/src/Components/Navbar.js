@@ -19,6 +19,7 @@ function Navbar() {
                         <li className="nav-item"><Link to='/sign-kit/convert' className="nav-link">Convert</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/learn-sign' className="nav-link">Learn Sign</Link></li>
                         <li className="nav-item"><Link to='/sign-kit/all-videos' className="nav-link">Videos</Link></li>
+                        <li className="nav-item"><Link to='/sign-kit/feedback' className="nav-link">Feedback</Link></li>
                     </ul>
                 </div>
             </div>

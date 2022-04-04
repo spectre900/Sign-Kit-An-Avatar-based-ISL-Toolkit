@@ -9,6 +9,7 @@ import Navbar from './Components/Navbar';
 import CreateVideo from './Pages/CreateVideo';
 import Footer from './Components/Footer';
 import Videos from './Pages/Videos';
+import Feedback from './Pages/Feedback';
 
 function App() {
   return(
@@ -22,6 +23,7 @@ function App() {
           <Route exact path='/sign-kit/all-videos' element={<Videos />} />
           <Route exact path='/sign-kit/video/:videoId' element={<Video />} />
           <Route exact path='/sign-kit/create-video' element={<CreateVideo />} />
+          <Route exact path='/sign-kit/feedback' element={<Feedback />} />
           <Route exact path='*' element={<Home/>} />
         </Routes>
         <Footer />
